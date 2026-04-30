@@ -3,6 +3,7 @@ package com.devsuperior.dscommerce.config;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +35,7 @@ public class ResourceServerConfig {
 	@Order(1)
 	public SecurityFilterChain h2SecurityFilterChain(HttpSecurity http) throws Exception {
 
-		http.securityMatcher("/h2-console/**").csrf(csrf -> csrf.disable())
+		http.securityMatcher(PathRequest.toH2Console()).csrf(csrf -> csrf.disable())
 				.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
 		return http.build();
 	}
@@ -43,10 +44,8 @@ public class ResourceServerConfig {
 	@Order(3)
 	public SecurityFilterChain rsSecurityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable());
-		http.authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated()); // ✅
-		http.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
-				.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())) // ✅ vincula o converter
-		);
+		http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
+		http.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(Customizer.withDefaults()));
 		http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 		return http.build();
 	}
