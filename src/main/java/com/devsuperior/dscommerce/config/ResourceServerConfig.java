@@ -43,8 +43,10 @@ public class ResourceServerConfig {
 	@Order(3)
 	public SecurityFilterChain rsSecurityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable());
-		http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
-		http.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(Customizer.withDefaults()));
+		http.authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated()); // ✅
+		http.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
+				.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())) // ✅ vincula o converter
+		);
 		http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 		return http.build();
 	}
