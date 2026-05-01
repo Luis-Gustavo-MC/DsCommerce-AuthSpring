@@ -5,16 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tb_product")
@@ -30,7 +21,7 @@ public class Product {
     private Double price;
     private String imgUrl;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST) // (cascade = CascadeType.PERSIST) sem isso n funciona
     @JoinTable(name = "tb_product_category",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
@@ -92,6 +83,14 @@ public class Product {
 
     public Set<Category> getCategories() {
         return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
+    }
+
+    public void setItems(Set<OrderItem> items) {
+        this.items = items;
     }
 
     public Set<OrderItem> getItems() {
