@@ -1,6 +1,7 @@
 package com.devsuperior.dscommerce.dto;
 
 import com.devsuperior.dscommerce.entities.Order;
+import com.devsuperior.dscommerce.entities.OrderItem;
 import com.devsuperior.dscommerce.entities.OrderStatus;
 import com.nimbusds.jose.crypto.impl.PRFParams;
 
@@ -31,12 +32,15 @@ public class OrderDTO {
         this.status = entity.getStatus();
         this.client = new ClientDTO(entity.getClient());
         this.payment = (entity.getPayment() == null) ? null : new PaymentDTO(entity.getPayment());
+        for (OrderItem item : entity.getItems()) {
+            items.add(new OrderItemDTO(item));
+        }
     }
 
     public Double getTotal(){
-        double sum = 0.0;
+        double sum = 0;
         for (OrderItemDTO item: items){
-            sum = sum + item.getSubTotal();
+            sum += item.getSubTotal();
         }
         return sum;
     }
